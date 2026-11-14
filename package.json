@@ -1,0 +1,25 @@
+{
+  "name": "jarvis-whatsapp-ai",
+  "version": "1.0.0",
+  "description": "JARVIS — AI-Powered WhatsApp Personal Assistant built with Baileys & Google Gemini 2.5 Flash",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "whatsapp-bot",
+    "baileys",
+    "gemini-ai",
+    "nodejs",
+    "ai-assistant"
+  ],
+  "author": "Fata Fatikhul Karim <fatafatikhul@gmail.com> (https://userfxxk.github.io)",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@google/genai": "^2.8.0",
+    "@whiskeysockets/baileys": "^7.0.0-rc13",
+    "pino": "^10.3.1",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
