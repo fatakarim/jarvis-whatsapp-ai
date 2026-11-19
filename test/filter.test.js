@@ -1,13 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-
-// Pure message triage filter extracted from index.js
-function shouldProcessIncomingMessage(msg) {
-  if (!msg || !msg.message || (msg.key && msg.key.fromMe)) return false;
-  const senderJid = (msg.key && msg.key.remoteJid) || '';
-  if (senderJid.endsWith('@g.us')) return false;
-  return true;
-}
+const { shouldProcessIncomingMessage } = require('../filter');
 
 test('JARVIS Triage Filter: blocks group broadcasts (@g.us) with 0 LLM calls', () => {
   let llmInvocations = 0;
@@ -20,6 +13,20 @@ test('JARVIS Triage Filter: blocks group broadcasts (@g.us) with 0 LLM calls', (
     llmInvocations++;
   }
   assert.equal(llmInvocations, 0, 'Group messages must never trigger an LLM API call');
+});
+
+test('JARVIS Triage Filter: blocks self-originated and status broadcast messages', () => {
+  const selfMsg = {
+    key: { remoteJid: '6281234567890@s.whatsapp.net', fromMe: true },
+    message: { conversation: 'Automated reply' }
+  };
+  const statusMsg = {
+    key: { remoteJid: 'status@broadcast', fromMe: false },
+    message: { conversation: 'Status update' }
+  };
+
+  assert.equal(shouldProcessIncomingMessage(selfMsg), false);
+  assert.equal(shouldProcessIncomingMessage(statusMsg), false);
 });
 
 test('JARVIS Triage Filter: allows 1:1 direct messages (@s.whatsapp.net)', () => {

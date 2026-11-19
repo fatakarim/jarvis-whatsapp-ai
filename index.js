@@ -2,9 +2,14 @@ const { default: makeWASocket, useMultiFileAuthState } = require('@whiskeysocket
 const { GoogleGenAI } = require('@google/genai');
 const qrcode = require('qrcode-terminal');
 const pino = require('pino');
+const { shouldProcessIncomingMessage } = require('./filter');
 
-// Load Gemini API Key from environment variable
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'YOUR_GEMINI_API_KEY';
+// Load Gemini API Key strictly from environment variable
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+if (!GEMINI_API_KEY) {
+    console.error('[JARVIS FATAL] GEMINI_API_KEY environment variable is required. Run: export GEMINI_API_KEY="your_key"');
+    process.exit(1);
+}
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 // Configurable fallback coordinates (defaults to Purbalingga city center)
@@ -41,13 +46,11 @@ async function startBot() {
 
     sock.ev.on('messages.upsert', async ({ messages }) => {
         const msg = messages[0];
-        if (!msg.message || msg.key.fromMe) return;
+        // Enforce strict 1:1 direct message triage filter (0 LLM calls on @g.us groups)
+        if (!shouldProcessIncomingMessage(msg)) return;
 
         const textMessage = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
         const senderJid = msg.key.remoteJid;
-
-        // Ignore group chats by default for privacy
-        if (senderJid.endsWith('@g.us')) return;
 
         console.log(`[CHAT IN] ${textMessage}`);
 
