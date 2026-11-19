@@ -1,4 +1,4 @@
-# 🤖 JARVIS — Gemini AI WhatsApp Personal Assistant
+# 🤖 JARVIS — Personal WhatsApp AI Triage Assistant Prototype
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![CI](https://github.com/fatakarim/jarvis-whatsapp-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/fatakarim/jarvis-whatsapp-ai/actions)
@@ -6,27 +6,32 @@
 [![Baileys](https://img.shields.io/badge/WhatsApp-Baileys_Multi--Device-25D366?style=flat-square&logo=whatsapp&logoColor=white)](https://github.com/WhiskeySockets/Baileys)
 [![License](https://img.shields.io/badge/License-MIT-10B981?style=flat-square)](LICENSE)
 
-**JARVIS** adalah asisten pribadi WhatsApp otomatis berbasis **Node.js** yang menggabungkan protokol WebSocket multi-device (`@whiskeysockets/baileys`) dengan kecerdasan **Google Gemini 2.5 Flash** (`@google/genai`). Dirancang untuk merespons pesan masuk secara kontekstual saat pemilik sedang fokus mengoding atau melakukan riset keamanan.
+**JARVIS** is an experimental, personal-use event-driven **Node.js** WhatsApp triage assistant combining the multi-device WebSocket protocol (`@whiskeysockets/baileys`) with **Google Gemini 2.5 Flash** (`@google/genai`). Built to handle incoming 1:1 personal messages in isolated local/Termux environments while studying or conducting application security research.
 
 ---
 
-## ✨ Fitur Utama
-- **Multi-File Auth State:** Sesi login tersimpan secara persisten tanpa perlu scan QR berulang kali.
-- **Natural Typing Simulation:** Menyimulasikan status *typing (`composing`)* sebelum mengirim balasan agar interaksi terasa alami.
-- **Private Chat Filter:** Mengabaikan pesan grup (`@g.us`) secara otomatis untuk menjaga privasi dan kuota API.
-- **Custom Command Handler:** Mendukung perintah khusus seperti `!lokasi` di samping percakapan berbasis AI.
+## ✨ Engineering Mechanics & Safety Guardrails
+- **Strict Group & Broadcast Triage Filter (`filter.js`):** Automatically drops group broadcasts (`@g.us`), status updates (`status@broadcast`), and self-originated messages before reaching the LLM handler—verified by automated unit tests (`test/filter.test.js`) to guarantee **0 LLM API calls on group traffic**.
+- **Deterministic Typing Presence Cadence:** Dispatches a 2,000ms `composing` presence update (`sendPresenceUpdate('composing')`) prior to sending `gemini-2.5-flash` responses.
+- **Environment-Isolated Secret Hygiene:** Enforces fail-fast startup validation requiring `process.env.GEMINI_API_KEY` (with session artifacts excluded via `.gitignore`).
+- **Multi-File Session Persistence:** Persists linked-device credentials via `useMultiFileAuthState` to avoid repeated QR pairing.
 
-## 🚀 Cara Menjalankan
+## 🚀 Installation & Running Tests
 
 ```bash
 git clone https://github.com/fatakarim/jarvis-whatsapp-ai.git
 cd jarvis-whatsapp-ai
+
+# Run automated triage filter unit tests (zero external network required)
+node --test test/filter.test.js
+
+# Install dependencies and start the assistant
 npm install
-export GEMINI_API_KEY="AIzaSyYourGeminiKeyHere"
+export GEMINI_API_KEY="your_gemini_api_key_here"
 npm start
 ```
 
-Scan kode QR yang muncul di terminal menggunakan WhatsApp (**Perangkat Tertaut / Linked Devices**).
+Scan the terminal QR code via WhatsApp (**Linked Devices**).
 
 ---
 
