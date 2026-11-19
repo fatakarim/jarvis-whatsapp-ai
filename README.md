@@ -17,7 +17,7 @@
 ## 🚀 Cara Menjalankan
 
 ```bash
-git clone https://github.com/UserFxxk/jarvis-whatsapp-ai.git
+git clone https://github.com/fatakarim/jarvis-whatsapp-ai.git
 cd jarvis-whatsapp-ai
 npm install
 export GEMINI_API_KEY="AIzaSyYourGeminiKeyHere"
@@ -30,6 +30,6 @@ Scan kode QR yang muncul di terminal menggunakan WhatsApp (**Perangkat Tertaut /
 
 ## 👨‍💻 Author
 **Fata Fatikhul Karim**
-- 🌐 Portfolio: [https://userfxxk.github.io](https://userfxxk.github.io)
+- 🌐 Portfolio: [https://fatakarim.github.io](https://fatakarim.github.io)
 - 💼 LinkedIn: [linkedin.com/in/fata-fatikhul-karim](https://www.linkedin.com/in/fata-fatikhul-karim)
 - 🛡️ HackerOne: [@zeonmaltius](https://hackerone.com/zeonmaltius)
